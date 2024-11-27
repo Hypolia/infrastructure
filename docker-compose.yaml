@@ -1,0 +1,68 @@
+
+name: hypolia
+networks:
+  hypolia:
+    driver: bridge
+    name: hypolia
+
+services:
+  kanri:
+    image: hypolia/kanri
+    ports:
+      - "4444:4444"
+    environment:
+      - PORT=4444
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/hypolia_kanri
+      - NATS_URL=nats://nats:4222
+    networks:
+      - hypolia
+  postgres:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: hypolia_api
+    volumes:
+      - ./init_database.sql:/docker-entrypoint-initdb.d/init-database.sql
+    networks:
+      - hypolia
+  nats:
+    image: nats:latest
+    ports:
+      - "4222:4222"
+      - "6222:6222"
+      - "8222:8222"
+    networks:
+      - hypolia
+  nats-dashboard:
+    image: mdawar/nats-dashboard
+    environment:
+      REVERSE_PROXY_UPSTREAM: 'nats:8222'
+    ports:
+      - target: 80
+        published: 8000
+        protocol: tcp
+  keycloak:
+    image: quay.io/keycloak/keycloak
+    ports:
+      - "8080:8080"
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      DB_VENDOR: POSTGRES
+      DB_ADDR: "postgres"  # Remplacez par l'adresse IP ou le nom du serveur de votre instance PostgreSQL
+      DB_PORT: "5432"  # Port par défaut de PostgreSQL
+      DB_DATABASE: "keycloak"
+      DB_USER: "postgres"
+      DB_PASSWORD: "postgres"
+    command:
+      - start-dev
+    volumes:
+      - keycloak_data:/path/to/keycloak/data
+    networks:
+      - hypolia
+
+volumes:
+    keycloak_data: {}
