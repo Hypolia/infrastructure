@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: hypolia
+  namespace: argocd
+spec:
+  sourceRepos:
+    - '*'
+    - 'https://github.com/hypolia/infrastructure.git'
+  destinations:
+    - server: 'https://kubernetes.default.svc'
+      namespace: '*'
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  roles:
+    - name: admin
+      policies:
+        - p, proj:hypolia:admin, applications, *, hypolia/*, allow
+      groups:
+        - admin

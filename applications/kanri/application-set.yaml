@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: kanri-app
+  namespace: argocd
+
+spec:
+  generators:
+    - list:
+        elements:
+          - environment: staging
+            namespace: hypolia
+            valuesFile: environments/staging/values.yaml
+  template:
+    metadata:
+      name: '{{ environment }}-kanri'
+      labels:
+        app.kubernetes.io/name: kanri
+        app.kubernetes.io/instance: '{{ environment }}-kanri'
+        app.kubernetes.io/managed-by: argocd
+    spec:
+      project: hypolia
+      source:
+        repoURL: 'https://github.com/hypolia/infrastructure.git'
+        targetRevision: HEAD
+        path: applications/kanri/chart
+        helm:
+          valueFiles:
+            - '{{ valuesFile }}'
+      destination:
+        server: 'https://kubernetes.default.svc'
+        namespace: '{{ namespace }}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true

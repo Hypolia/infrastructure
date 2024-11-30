@@ -1,0 +1,6 @@
+dependencies:
+- name: kanri
+  repository: https://hypolia.github.io/kanri/kubernetes/chart/charts/
+  version: 0.1.0
+digest: sha256:263a5a0ecf70b68c4891307c460a920ca0a6f92da1ffea11acacfd8c7af37fa7
+generated: "2024-11-30T19:14:09.325449+01:00"
