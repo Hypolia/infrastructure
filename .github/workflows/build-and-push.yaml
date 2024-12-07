@@ -34,6 +34,9 @@ on:
     secrets:
       PAT:
         required: true
+      CR_TOKEN:
+        required: true
+
 
 jobs:
   build-and-push:
@@ -47,6 +50,7 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
       - name: Add Docker meta
+        if: inputs.use_gcp == 'true'
         id: meta
         uses: docker/metadata-action@v5
         with:
@@ -58,7 +62,7 @@ jobs:
         with:
           registry: ${{ inputs.registry }}
           username: ${{ inputs.registry_username }}
-          password: ${{ secrets.PAT }}
+          password: ${{ secrets.CR_TOKEN }}
       - name: Setup Buildx
         uses: docker/setup-buildx-action@v3
       - name: Build and Push
