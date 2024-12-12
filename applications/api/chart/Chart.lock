@@ -1,0 +1,6 @@
+dependencies:
+- name: api
+  repository: https://hypolia.github.io/api/kubernetes/chart/charts/
+  version: 0.1.0
+digest: sha256:73a81c26fdb1ddc3a66d0a51798d5346b25670c9e356470be6d84f44d71828aa
+generated: "2024-12-12T11:32:06.945835+01:00"

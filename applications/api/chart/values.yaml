@@ -1,0 +1,3 @@
+api:
+  image:
+    tag: "b10afd6"
